@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
-	<bean id="animal" class="org.cc.service.impl.Cat"></bean>
+	<bean id="animal" class="org.cc.service.impl.Cat">
+		<property name="personDao" ref="personDao"></property>
+		<property name="age" value="10"></property>
+	</bean>
+	<bean id="personDao" class="org.cc.dao.impl.PersonDaoImpl"></bean>
 </beans>

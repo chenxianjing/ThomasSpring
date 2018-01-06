@@ -1,5 +1,6 @@
 package org.cc.entry;
 
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class ApplicationContext {
 	public ApplicationContext(String fileName) {
 		this.readXml(fileName);
 		this.instanceBeans();
+		this.injection();
 	}
 	
 	/**
@@ -46,14 +48,27 @@ public class ApplicationContext {
 			Element rootElement = document.getRootElement();
 			Iterator<Element> it = rootElement.elementIterator();
 			Element element = null;
-			String id = null;
-			String clazz = null;
 			Beans beans = null;
+			Iterator<Element> sonIterator = null;
+			Element sonElement = null;
+			PropertyDefine propertyDefine = null;
+			List<PropertyDefine> list = null;
 			while(it.hasNext()) {
+				beans = new Beans();
 				element = it.next();
-				id = element.attributeValue("id");
-				clazz = element.attributeValue("class");
-				beans = new Beans(id,clazz);
+				beans.setId(element.attributeValue("id"));
+				beans.setType(element.attributeValue("class"));
+				sonIterator = element.elementIterator();
+				while(sonIterator.hasNext()) {
+					list  = new ArrayList<>();
+					sonElement = sonIterator.next();
+					propertyDefine = new PropertyDefine();
+					propertyDefine.setName(sonElement.attributeValue("name"));
+					propertyDefine.setValue(sonElement.attributeValue("value"));
+					propertyDefine.setRef(sonElement.attributeValue("ref"));
+					list.add(propertyDefine);
+				}
+				beans.setPropertyList(list);
 				beanList.add(beans);
 			}
 		} catch (DocumentException e) {
@@ -79,6 +94,42 @@ public class ApplicationContext {
 			}
 		}else {
 			Logger.getGlobal().info("xml并没有配置bean");
+		}
+	}
+	
+	private void injection() {
+		if(!beanList.isEmpty()) {
+			String className = null;
+			List<PropertyDefine> list = null;
+			Class<?> cl = null;
+			Field field = null;
+			Field value = null;
+			Field ref = null;
+			try {
+				for(Beans beans : beanList) {
+					className = beans.getType();
+					list = beans.getPropertyList();
+					Object object = sigletons.get(beans.getId());
+					cl = Class.forName(className);
+					for(PropertyDefine propertyDefine:list) {
+						field = cl.getDeclaredField("name");
+						value = cl.getDeclaredField("value");
+						ref = cl.getDeclaredField("ref");
+						field.setAccessible(true);
+						field.set(object, propertyDefine.getName());
+						if(value != null) {
+							value.setAccessible(true);
+							value.set(object, propertyDefine.getValue());
+						}
+						if(ref != null) {
+							ref.setAccessible(true);
+							ref.set(object,sigletons.get(propertyDefine.getRef()));
+						}
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

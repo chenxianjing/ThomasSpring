@@ -1,7 +1,6 @@
 package org.cc.entry;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import lombok.Data;
 @Data
@@ -17,11 +16,5 @@ public class Beans {
 	 */
 	private String type;
 	
-	private Map<String,Object> properties = new HashMap<>();
-	
-	public Beans(String id,String type) {
-		this.id = id;
-		this.type = type;
-	}
-	
+	private List<PropertyDefine> propertyList;
 }
