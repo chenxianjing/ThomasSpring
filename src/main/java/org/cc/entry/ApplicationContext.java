@@ -59,8 +59,8 @@ public class ApplicationContext {
 				beans.setId(element.attributeValue("id"));
 				beans.setType(element.attributeValue("class"));
 				sonIterator = element.elementIterator();
+				list  = new ArrayList<>();
 				while(sonIterator.hasNext()) {
-					list  = new ArrayList<>();
 					sonElement = sonIterator.next();
 					propertyDefine = new PropertyDefine();
 					propertyDefine.setName(sonElement.attributeValue("name"));
@@ -103,8 +103,9 @@ public class ApplicationContext {
 			List<PropertyDefine> list = null;
 			Class<?> cl = null;
 			Field field = null;
-			Field value = null;
-			Field ref = null;
+			String pName = "";
+			String pValue = "";
+			String pRef = "";
 			try {
 				for(Beans beans : beanList) {
 					className = beans.getType();
@@ -112,18 +113,15 @@ public class ApplicationContext {
 					Object object = sigletons.get(beans.getId());
 					cl = Class.forName(className);
 					for(PropertyDefine propertyDefine:list) {
-						field = cl.getDeclaredField("name");
-						value = cl.getDeclaredField("value");
-						ref = cl.getDeclaredField("ref");
+						pName = propertyDefine.getName();
+						pValue = propertyDefine.getValue();
+						pRef = propertyDefine.getRef();
+						field = cl.getDeclaredField(pName);
 						field.setAccessible(true);
-						field.set(object, propertyDefine.getName());
-						if(value != null) {
-							value.setAccessible(true);
-							value.set(object, propertyDefine.getValue());
-						}
-						if(ref != null) {
-							ref.setAccessible(true);
-							ref.set(object,sigletons.get(propertyDefine.getRef()));
+						if(pRef != null) {
+							field.set(object, sigletons.get(propertyDefine.getRef()));
+						}else if(pValue != null) {
+							field.set(object, pValue);
 						}
 					}
 				}

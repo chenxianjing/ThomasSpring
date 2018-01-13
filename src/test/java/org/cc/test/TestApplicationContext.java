@@ -1,20 +1,14 @@
 package org.cc.test;
 
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
+import org.cc.entry.ApplicationContext;
+import org.cc.service.Animal;
 
 public class TestApplicationContext {
 	
 	public static void main(String[] args) {
-		/*ApplicationContext applicationContext = new ApplicationContext("beans.xml");
+		ApplicationContext applicationContext = new ApplicationContext("beans.xml");
 		Animal animal = (Animal) applicationContext.getBean("animal");
-		animal.voice();*/
-		GregorianCalendar[] gregorianCalendar = new GregorianCalendar[2];
-		gregorianCalendar[0] = new GregorianCalendar();
-		gregorianCalendar[1] = new GregorianCalendar();
-		min(gregorianCalendar);
-		ArrayList<?> list = new ArrayList<>();
-		list.add(null);
+		animal.voice();
 	}
 	
 	public static <T extends Comparable<T>> T min(T[] a) {
