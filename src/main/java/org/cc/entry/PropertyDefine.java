@@ -4,12 +4,12 @@ import lombok.Data;
 
 @Data
 public class PropertyDefine {
-	
+
 	private String name;
-	
+
 	private String value;
-	
+
 	private String ref;
-	
-	private String test1;
+
+	private String test2;
 }
