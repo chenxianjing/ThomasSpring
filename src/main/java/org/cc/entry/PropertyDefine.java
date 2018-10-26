@@ -11,5 +11,5 @@ public class PropertyDefine {
 
 	private String ref;
 
-	private String test8;
+	private String test9;
 }
