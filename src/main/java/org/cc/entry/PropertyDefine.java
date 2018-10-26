@@ -10,4 +10,6 @@ public class PropertyDefine {
 	private String value;
 	
 	private String ref;
+	
+	private String test;
 }
